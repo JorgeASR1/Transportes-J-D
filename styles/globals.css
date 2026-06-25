@@ -1,0 +1,914 @@
+/* ============================================================
+   RADAR DE OPORTUNIDADES — Estilos
+   Dashboard de transporte para Mercado Público
+   ============================================================ */
+
+/* Variables de diseño */
+:root {
+  --color-fondo: #f0f4f8;
+  --color-superficie: #ffffff;
+  --color-texto: #1a2332;
+  --color-texto-secundario: #5a6a7e;
+  --color-borde: #dce3eb;
+
+  --color-primario: #1a56db;
+  --color-primario-suave: #e8eefb;
+
+  --color-critica: #dc2626;
+  --color-critica-fondo: #fef2f2;
+  --color-critica-borde: #fca5a5;
+
+  --color-alta: #ea580c;
+  --color-alta-fondo: #fff7ed;
+  --color-alta-borde: #fdba74;
+
+  --color-media: #ca8a04;
+  --color-media-fondo: #fefce8;
+  --color-media-borde: #fde047;
+
+  --color-baja: #16a34a;
+  --color-baja-fondo: #f0fdf4;
+  --color-baja-borde: #86efac;
+
+  --color-cerrada: #6b7280;
+
+  --radio: 12px;
+  --radio-sm: 8px;
+  --sombra: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --sombra-hover: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+}
+
+/* Reset básico */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--color-primario);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   LAYOUT PRINCIPAL
+   ============================================================ */
+
+.contenedor {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 16px;
+  padding-bottom: 80px;
+}
+
+/* ============================================================
+   ENCABEZADO
+   ============================================================ */
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: var(--color-superficie);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+.header h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.header-subtitulo {
+  color: var(--color-texto-secundario);
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
+.boton-actualizar {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  background: var(--color-primario-suave);
+  color: var(--color-primario);
+  border: none;
+  border-radius: var(--radio-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.boton-actualizar:hover:not(:disabled) {
+  background: #d4dff7;
+}
+
+.boton-actualizar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   RESUMEN
+   ============================================================ */
+
+.resumen {
+  margin-bottom: 16px;
+  padding: 20px;
+  background: var(--color-superficie);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  text-align: center;
+}
+
+.resumen-principal {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.resumen-numero {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-primario);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.resumen-texto {
+  font-size: 1rem;
+  color: var(--color-texto-secundario);
+}
+
+.resumen-detalle {
+  font-size: 0.8rem;
+  color: var(--color-texto-secundario);
+  margin-top: 8px;
+}
+
+.resumen-alerta {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: var(--color-critica-fondo);
+  color: var(--color-critica);
+  border-radius: var(--radio-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* ============================================================
+   FILTROS
+   ============================================================ */
+
+.filtros {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--color-superficie);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filtro-busqueda {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--color-borde);
+  border-radius: var(--radio-sm);
+  font-size: 0.9rem;
+  color: var(--color-texto);
+  background: var(--color-fondo);
+  transition: border-color 0.15s;
+}
+
+.filtro-busqueda:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  background: #fff;
+}
+
+.filtro-busqueda::placeholder {
+  color: #9ca3af;
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filtro-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-texto-secundario);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.filtro-opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filtro-chip {
+  padding: 6px 12px;
+  border: 1.5px solid var(--color-borde);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--color-texto-secundario);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.filtro-chip:hover {
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+
+.filtro-chip-activo {
+  background: var(--color-primario);
+  border-color: var(--color-primario);
+  color: #fff;
+}
+
+.filtro-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: var(--color-texto-secundario);
+  cursor: pointer;
+}
+
+.filtro-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primario);
+  cursor: pointer;
+}
+
+/* ============================================================
+   TARJETAS DE OPORTUNIDADES
+   ============================================================ */
+
+.listado {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tarjeta {
+  background: var(--color-superficie);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 16px;
+  border-left: 4px solid var(--color-borde);
+  transition: box-shadow 0.15s, transform 0.1s;
+}
+
+.tarjeta:hover {
+  box-shadow: var(--sombra-hover);
+}
+
+/* Borde lateral según urgencia */
+.tarjeta-critica { border-left-color: var(--color-critica); }
+.tarjeta-alta    { border-left-color: var(--color-alta); }
+.tarjeta-media   { border-left-color: var(--color-media); }
+.tarjeta-baja    { border-left-color: var(--color-baja); }
+.tarjeta-cerrada { border-left-color: var(--color-cerrada); }
+
+.tarjeta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.tarjeta-estado {
+  font-size: 0.75rem;
+  color: var(--color-texto-secundario);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.tarjeta-titulo {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  color: var(--color-texto);
+  /* Limitar a 3 líneas máximo */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tarjeta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.tarjeta-campo {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+.campo-icono {
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.campo-texto {
+  color: var(--color-texto-secundario);
+  word-break: break-word;
+}
+
+.campo-texto.codigo {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.8rem;
+  background: var(--color-fondo);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.tarjeta-boton {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  background: var(--color-primario);
+  color: #fff;
+  border-radius: var(--radio-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.tarjeta-boton:hover {
+  background: #1347b8;
+  text-decoration: none;
+}
+
+/* ============================================================
+   BADGES DE URGENCIA
+   ============================================================ */
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.badge-critica {
+  background: var(--color-critica);
+  color: #fff;
+  animation: pulso 2s infinite;
+}
+
+.badge-alta {
+  background: var(--color-alta-fondo);
+  color: var(--color-alta);
+  border: 1px solid var(--color-alta-borde);
+}
+
+.badge-media {
+  background: var(--color-media-fondo);
+  color: var(--color-media);
+  border: 1px solid var(--color-media-borde);
+}
+
+.badge-baja {
+  background: var(--color-baja-fondo);
+  color: var(--color-baja);
+  border: 1px solid var(--color-baja-borde);
+}
+
+.badge-cerrada,
+.badge-desconocida {
+  background: #f3f4f6;
+  color: var(--color-cerrada);
+}
+
+@keyframes pulso {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ============================================================
+   ESTADOS (cargando, error, vacío)
+   ============================================================ */
+
+.estado-mensaje {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--color-texto-secundario);
+}
+
+.estado-mensaje p {
+  margin-top: 12px;
+  font-size: 1rem;
+}
+
+.estado-detalle {
+  font-size: 0.85rem !important;
+  color: #9ca3af;
+}
+
+.estado-vacio-icono {
+  font-size: 3rem;
+  margin-bottom: 8px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--color-borde);
+  border-top-color: var(--color-primario);
+  border-radius: 50%;
+  margin: 0 auto;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
+.estado-error {
+  text-align: center;
+  padding: 40px 20px;
+  background: var(--color-critica-fondo);
+  border-radius: var(--radio);
+  border: 1px solid var(--color-critica-borde);
+}
+
+.error-titulo {
+  font-weight: 600;
+  color: var(--color-critica);
+  font-size: 1.05rem;
+}
+
+.error-detalle {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  color: var(--color-texto-secundario);
+}
+
+.boton-reintentar {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: var(--color-primario);
+  color: #fff;
+  border: none;
+  border-radius: var(--radio-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.boton-reintentar:hover {
+  background: #1347b8;
+}
+
+/* ============================================================
+   PIE DE PÁGINA
+   ============================================================ */
+
+.footer {
+  margin-top: 40px;
+  padding: 16px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.footer p {
+  margin-bottom: 4px;
+}
+
+.footer a {
+  color: #9ca3af;
+  text-decoration: underline;
+}
+
+/* ============================================================
+   RESPONSIVE — Pantallas más grandes
+   ============================================================ */
+
+@media (min-width: 768px) {
+  .contenedor {
+    padding: 24px;
+  }
+
+  .header h1 {
+    font-size: 1.6rem;
+  }
+
+  .resumen-numero {
+    font-size: 3rem;
+  }
+
+  .tarjeta {
+    padding: 20px;
+  }
+
+  .tarjeta-titulo {
+    font-size: 1.05rem;
+  }
+}
+
+/* ============================================================
+   v2 — PESTAÑAS
+   ============================================================ */
+
+.pestanas {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  background: var(--color-superficie);
+  padding: 6px;
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+.pestana {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: var(--color-texto-secundario);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radio-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pestana:hover {
+  background: var(--color-fondo);
+}
+
+.pestana-activa {
+  background: var(--color-primario);
+  color: #fff;
+}
+
+.pestana-activa:hover {
+  background: var(--color-primario);
+}
+
+.barra-superior {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.actualizacion-pie {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 16px;
+}
+
+/* ============================================================
+   v2 — FILTROS ADICIONALES
+   ============================================================ */
+
+.filtro-fila {
+  display: flex;
+  gap: 10px;
+}
+
+.filtro-medio {
+  flex: 1;
+}
+
+.filtro-select,
+.filtro-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--color-borde);
+  border-radius: var(--radio-sm);
+  font-size: 0.875rem;
+  color: var(--color-texto);
+  background: var(--color-fondo);
+}
+
+.filtro-select:focus,
+.filtro-input:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  background: #fff;
+}
+
+/* ============================================================
+   v2 — ANÁLISIS DE COMPETENCIA
+   ============================================================ */
+
+.competencia-intro {
+  background: var(--color-superficie);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.competencia-titulo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.competencia-desc {
+  font-size: 0.875rem;
+  color: var(--color-texto-secundario);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.competencia-controles {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.competencia-opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.boton-analizar {
+  margin-top: 4px;
+  padding: 12px;
+  background: var(--color-primario);
+  color: #fff;
+  border: none;
+  border-radius: var(--radio-sm);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.boton-analizar:hover:not(:disabled) {
+  background: #1347b8;
+}
+
+.boton-analizar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.competencia-aviso {
+  font-size: 0.8rem;
+  color: var(--color-texto-secundario);
+  text-align: center;
+  font-style: italic;
+}
+
+/* Tarjetas de estadísticas */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--color-superficie);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-numero {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-primario);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.stat-numero-sm {
+  font-size: 1.1rem;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--color-texto-secundario);
+}
+
+/* Ranking de competidores */
+.seccion-titulo {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  padding-left: 4px;
+}
+
+.ranking-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-superficie);
+  border-radius: var(--radio-sm);
+  box-shadow: var(--sombra);
+  padding: 12px 14px;
+}
+
+.ranking-pos {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primario-suave);
+  color: var(--color-primario);
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.ranking-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ranking-nombre {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ranking-detalle {
+  font-size: 0.75rem;
+  color: var(--color-texto-secundario);
+}
+
+.ranking-monto {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-baja);
+}
+
+/* ============================================================
+   v3 — COMPRA ÁGIL Y ESTIMADOR DE PRECIOS
+   ============================================================ */
+
+/* Las pestañas ahora son 3: que quepan bien en móvil */
+.pestana {
+  font-size: 0.82rem;
+  padding: 10px 4px;
+}
+
+/* Nota informativa (banner suave) */
+.nota-info {
+  background: var(--color-primario-suave);
+  color: #1347b8;
+  padding: 12px 14px;
+  border-radius: var(--radio-sm);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.seccion-desc {
+  font-size: 0.8rem;
+  color: var(--color-texto-secundario);
+  margin-bottom: 14px;
+  line-height: 1.5;
+  padding: 0 4px;
+}
+
+/* Estimador de precios */
+.estimador-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.estimador-card {
+  background: var(--color-superficie);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 16px;
+  border-left: 4px solid var(--color-baja);
+}
+
+.estimador-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.estimador-etiqueta {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+.estimador-contratos {
+  font-size: 0.72rem;
+  color: var(--color-texto-secundario);
+  background: var(--color-fondo);
+  padding: 3px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.estimador-mediana {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.estimador-mediana-label {
+  font-size: 0.72rem;
+  color: var(--color-texto-secundario);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.estimador-mediana-valor {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-baja);
+  letter-spacing: -0.02em;
+}
+
+.estimador-rango {
+  font-size: 0.82rem;
+  color: var(--color-texto);
+  padding: 8px 10px;
+  background: var(--color-baja-fondo);
+  border-radius: var(--radio-sm);
+  margin-bottom: 8px;
+}
+
+.estimador-extremos {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--color-texto-secundario);
+}

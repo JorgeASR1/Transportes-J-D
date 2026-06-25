@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/alerta-diaria",
+      "schedule": "0 12 * * *"
+    }
+  ]
+}
