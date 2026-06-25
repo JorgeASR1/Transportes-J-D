@@ -13,6 +13,38 @@ import { contieneTransporte, calcularUrgencia, diasRestantes } from '../../lib/f
 export const config = { maxDuration: 30 };
 
 const BASE = 'https://api2.mercadopublico.cl';
+// La documentación oficial usa ambas variantes; probamos las dos.
+const RUTAS = ['/v2/compra-agil', '/v2/compraagil'];
+
+// Trae una página de resultados probando ambas rutas posibles
+async function traerPagina(ticket, regiones, pagina) {
+  let ultimoError = null;
+  for (const ruta of RUTAS) {
+    const url = `${BASE}${ruta}?${regiones}estado=publicada&tamano_pagina=50&numero_pagina=${pagina}&ordenar_por=FechaPublicacion`;
+    try {
+      const resp = await fetch(url, { headers: { ticket } });
+      if (resp.status === 404) {
+        // Esta ruta no existe; probamos la otra
+        ultimoError = { status: 404, ruta, cuerpo: '' };
+        continue;
+      }
+      const texto = await resp.text();
+      if (!resp.ok) {
+        ultimoError = { status: resp.status, ruta, cuerpo: texto.slice(0, 300) };
+        // 401/403/429 no se arreglan cambiando de ruta: cortamos
+        if ([401, 403, 429].includes(resp.status)) break;
+        continue;
+      }
+      let datos;
+      try { datos = JSON.parse(texto); }
+      catch { ultimoError = { status: resp.status, ruta, cuerpo: 'Respuesta no es JSON: ' + texto.slice(0, 200) }; continue; }
+      return { ok: true, datos };
+    } catch (e) {
+      ultimoError = { status: 'fetch_error', ruta, cuerpo: e.message };
+    }
+  }
+  return { ok: false, error: ultimoError };
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -24,7 +56,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Falta configurar el ticket de Mercado Público.' });
   }
 
-  // Por defecto Biobío (8) y Ñuble (16); estado "publicada" = abierta a cotizar
   const { soloRegion } = req.query;
   const regiones = soloRegion === 'false' ? '' : 'region=8,16&';
 
@@ -32,37 +63,47 @@ export default async function handler(req, res) {
     const items = [];
     let pagina = 1;
     let totalPaginas = 1;
-    const MAX_PAGINAS = 10; // tope de seguridad
+    const MAX_PAGINAS = 10;
 
-    // Recorrer páginas hasta traer todas las Compras Ágiles publicadas
     do {
-      const url = `${BASE}/v2/compra-agil?${regiones}estado=publicada&tamano_pagina=50&numero_pagina=${pagina}&ordenar_por=FechaPublicacion`;
-      const resp = await fetch(url, { headers: { ticket } });
+      const resultado = await traerPagina(ticket, regiones, pagina);
 
-      if (resp.status === 429) {
-        return res.status(429).json({ error: 'Se alcanzó el límite diario de consultas a la API. Intenta mañana.' });
-      }
-      if (!resp.ok) {
-        throw new Error(`La API de Compra Ágil respondió con error: ${resp.status}`);
+      if (!resultado.ok) {
+        const e = resultado.error || {};
+        let pista = '';
+        if (e.status === 401 || e.status === 403) {
+          pista = ' Tu ticket no fue aceptado por la API de Compra Ágil (que es un servidor distinto). Verifica que el ticket esté bien pegado.';
+        } else if (e.status === 404) {
+          pista = ' Ninguna de las dos rutas conocidas respondió. Puede que la API haya cambiado de dirección.';
+        } else if (e.status === 429) {
+          pista = ' Se alcanzó el límite diario de consultas. Intenta mañana.';
+        }
+        return res.status(502).json({
+          error: 'No se pudo consultar la API de Compra Ágil.',
+          detalle: `Código ${e.status} en ruta ${e.ruta || '?'}.${pista} Respuesta: ${e.cuerpo || '(vacía)'}`,
+        });
       }
 
-      const datos = await resp.json();
-      if (datos.success !== 'OK' || !datos.payload) {
-        throw new Error('La API de Compra Ágil devolvió una respuesta inesperada.');
+      const datos = resultado.datos;
+      if (datos.success && datos.success !== 'OK') {
+        const msg = datos.errors && datos.errors[0] ? datos.errors[0].mensaje : 'respuesta NOK';
+        return res.status(502).json({
+          error: 'La API de Compra Ágil devolvió un error.',
+          detalle: msg,
+        });
       }
 
-      const lote = datos.payload.items || [];
+      const payload = datos.payload || {};
+      const lote = payload.items || [];
       items.push(...lote);
 
-      const pag = datos.payload.paginacion || {};
+      const pag = payload.paginacion || {};
       totalPaginas = pag.total_paginas || 1;
       pagina += 1;
     } while (pagina <= totalPaginas && pagina <= MAX_PAGINAS);
 
-    // Filtrar por palabras clave de transporte (en nombre)
     const transporte = items.filter(it => contieneTransporte(it.nombre || ''));
 
-    // Transformar a formato limpio
     const oportunidades = transporte.map(it => {
       const fechaCierre = it.fechas?.fecha_cierre || null;
       const dias = diasRestantes(fechaCierre);
@@ -78,12 +119,10 @@ export default async function handler(req, res) {
         ofertasRecibidas: it.resumen?.total_ofertas_recibidas ?? null,
         diasRestantes: dias,
         urgencia: calcularUrgencia(dias),
-        // Enlace directo a la ficha de Compra Ágil en Mercado Público
         url: `https://www.mercadopublico.cl/Procurement/Modules/RFB/DetailsAcquisition.aspx?qs=${it.codigo || ''}`,
       };
     });
 
-    // Ordenar por urgencia
     oportunidades.sort((a, b) => {
       if (a.diasRestantes === null) return 1;
       if (b.diasRestantes === null) return -1;
@@ -100,7 +139,7 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Error consultando Compra Ágil:', error);
     return res.status(500).json({
-      error: 'No se pudo consultar la API de Compra Ágil. Intenta de nuevo en unos minutos.',
+      error: 'No se pudo consultar la API de Compra Ágil.',
       detalle: error.message,
     });
   }
