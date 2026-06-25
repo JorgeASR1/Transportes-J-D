@@ -267,7 +267,7 @@ function VistaCompraAgil() {
     try {
       const resp = await fetch('/api/compraagil');
       const datos = await resp.json();
-      if (!resp.ok) throw new Error(datos.error || 'Error al cargar Compra Ágil');
+      if (!resp.ok) throw new Error((datos.error || 'Error al cargar Compra Ágil') + (datos.detalle ? ' — ' + datos.detalle : ''));
       setOportunidades(datos.oportunidades || []);
       setTotal(datos.total || 0);
       setUltimaActualizacion(datos.ultimaActualizacion);
